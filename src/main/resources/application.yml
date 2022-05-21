@@ -20,3 +20,10 @@ swagger:
   application-version: 1.0
   application-description: TMS管理系统
   try-host: http://localhost:${server.port}
+
+myfun:
+  jwt:
+    header: Authorization
+    # ===== 7天 单位秒 ===== #
+    expire: 604800
+    secret: a56923391a50825194a1781127309awu

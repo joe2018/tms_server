@@ -2,6 +2,7 @@ package org.myfun.tms_server.security;
 
 import cn.hutool.json.JSONUtil;
 import org.myfun.tms_server.common.lang.Result;
+import org.myfun.tms_server.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -19,8 +20,8 @@ import java.io.IOException;
 @Component
 public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
-//    @Autowired
-//    JwtUtils jwtUtils;
+    @Autowired
+    JwtUtils jwtUtils;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -28,10 +29,10 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         ServletOutputStream outputStream = response.getOutputStream();
 
         // 生成jwt，并放置到请求头中
-//        String jwt = jwtUtils.generateToken(authentication.getName());
-//        response.setHeader(jwtUtils.getHeader(), jwt);
+        String jwt = jwtUtils.generateToken(authentication.getName());
+        response.setHeader(jwtUtils.getHeader(), jwt);
 
-        Result result = Result.ok("操作成功");
+        Result result = Result.ok("登入成功");
 
         outputStream.write(JSONUtil.toJsonStr(result).getBytes("UTF-8"));
 
