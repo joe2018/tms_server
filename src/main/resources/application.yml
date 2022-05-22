@@ -6,10 +6,9 @@ spring:
     password: 123456
     url: jdbc:mysql://localhost:3306/tms_server?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8
     driver-class-name: com.mysql.cj.jdbc.Driver
-  security:
-    user:
-      name: user
-      password: 123456
+
+
+
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**Mapper.xml
 
@@ -27,3 +26,4 @@ myfun:
     # ===== 7天 单位秒 ===== #
     expire: 604800
     secret: a56923391a50825194a1781127309awu
+

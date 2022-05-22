@@ -1,18 +1,22 @@
 package org.myfun.tms_server.config;
 
-import org.myfun.tms_server.security.CaptchaFilter;
-import org.myfun.tms_server.security.LoginFailureHandler;
-import org.myfun.tms_server.security.LoginSuccessHandler;
+import org.myfun.tms_server.security.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+/**
+ * @author Admin
+ */
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @EnableWebSecurity
@@ -25,7 +29,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     LoginSuccessHandler loginSuccessHandler;
 
     @Autowired
+    JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+
+    @Autowired
+    JwtAccessDeniedHandler jwtAccessDeniedHandler;
+
+    @Autowired
     CaptchaFilter captchaFilter;
+
+    @Autowired
+    UserDetailServiceImpl userDetailService;
+
+    @Bean
+    JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
+        return new JwtAuthenticationFilter(authenticationManager());
+    }
+
+    @Bean
+    BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
     public static final String[] URL_WHITELIST = {
             "/webjars/**",
@@ -33,26 +56,36 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/captcha",
             "/login",
             "/logout",
+
     };
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
+                // 登录配置
                 .formLogin()
                 .successHandler(loginSuccessHandler)
                 .failureHandler(loginFailureHandler)
 
-                .and()
-                .authorizeRequests()
-                //白名单
-                .antMatchers(URL_WHITELIST).permitAll()
-                .anyRequest().authenticated()
                 // 不会创建 session
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
                 .and()
+                .authorizeRequests()
+                //白名单
+                .antMatchers(URL_WHITELIST).permitAll()
+                .anyRequest().authenticated()
+
+                // 异常处理器
+                .and()
+                .exceptionHandling()
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .accessDeniedHandler(jwtAccessDeniedHandler)
+
+                .and()
+                .addFilter(jwtAuthenticationFilter())
 //                 登录验证码校验过滤器
                 .addFilterBefore(captchaFilter, UsernamePasswordAuthenticationFilter.class)
         ;
@@ -67,6 +100,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/v3/api-docs",
                 "/webjars/**",
                 "/doc.html");
+    }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailService);
     }
 
 }
