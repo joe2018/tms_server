@@ -20,5 +20,5 @@ public class BaseEntity implements Serializable {
     private LocalDateTime created;
     private LocalDateTime updated;
 
-    private Integer status;
+    private Integer statu;
 }

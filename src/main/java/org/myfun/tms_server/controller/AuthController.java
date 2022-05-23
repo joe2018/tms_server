@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.security.Principal;
 
 
 @Slf4j
@@ -50,6 +51,25 @@ public class AuthController extends BaseController{
                         .put("token", key)
                         .put("captchaImg", base64Img)
                         .build()
+        );
+    }
+
+    /**
+     * 获取用户信息接口
+     * @param principal
+     * @return
+     */
+    @GetMapping("/sys/userInfo")
+    public Result userInfo(Principal principal) {
+
+        SysUser sysUser = sysUserService.getByUsername(principal.getName());
+
+        return Result.succ(MapUtil.builder()
+                .put("id", sysUser.getId())
+                .put("username", sysUser.getUsername())
+                .put("avatar", sysUser.getAvatar())
+                .put("created", sysUser.getCreated())
+                .map()
         );
     }
 }
