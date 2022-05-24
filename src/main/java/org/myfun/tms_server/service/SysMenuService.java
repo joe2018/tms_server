@@ -1,5 +1,6 @@
 package org.myfun.tms_server.service;
 
+import org.myfun.tms_server.common.dto.SysMenuDto;
 import org.myfun.tms_server.entity.SysMenu;
 import com.baomidou.mybatisplus.extension.service.IService;
 

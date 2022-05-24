@@ -1,9 +1,13 @@
 package org.myfun.tms_server.controller;
 
 
+import cn.hutool.core.map.MapUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.swagger.annotations.Api;
+import org.myfun.tms_server.common.dto.SysMenuDto;
 import org.myfun.tms_server.common.lang.Result;
+import org.myfun.tms_server.entity.SysMenu;
+import org.myfun.tms_server.entity.SysRoleMenu;
 import org.myfun.tms_server.entity.SysUser;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
@@ -41,9 +45,9 @@ public class SysMenuController extends BaseController {
         String[] authorityInfoArray = StringUtils.tokenizeToStringArray(authorityInfo, ",");
 
         // 获取导航栏信息
-        List<SysMenuDto> navs = sysMenuService.getCurrentUserNav();
+        List navs = sysMenuService.getCurrentUserNav();
 
-        return Result.succ(MapUtil.builder()
+        return Result.ok("操作成功", MapUtil.builder()
                 .put("authoritys", authorityInfoArray)
                 .put("nav", navs)
                 .map()
@@ -53,7 +57,7 @@ public class SysMenuController extends BaseController {
     @GetMapping("/info/{id}")
     @PreAuthorize("hasAuthority('sys:menu:list')")
     public Result info(@PathVariable(name = "id") Long id) {
-        return Result.succ(sysMenuService.getById(id));
+        return Result.ok("操作成功",sysMenuService.getById(id));
     }
 
     @GetMapping("/list")
@@ -61,7 +65,7 @@ public class SysMenuController extends BaseController {
     public Result list() {
 
         List<SysMenu> menus = sysMenuService.tree();
-        return Result.succ(menus);
+        return Result.ok("操作成功",menus);
     }
 
     @PostMapping("/save")
@@ -71,7 +75,7 @@ public class SysMenuController extends BaseController {
         sysMenu.setCreated(LocalDateTime.now());
 
         sysMenuService.save(sysMenu);
-        return Result.succ(sysMenu);
+        return Result.ok("操作成功",sysMenu);
     }
 
     @PostMapping("/update")
@@ -84,7 +88,7 @@ public class SysMenuController extends BaseController {
 
         // 清除所有与该菜单相关的权限缓存
         sysUserService.clearUserAuthorityInfoByMenuId(sysMenu.getId());
-        return Result.succ(sysMenu);
+        return Result.ok("操作成功",sysMenu);
     }
 
     @PostMapping("/delete/{id}")
@@ -93,7 +97,7 @@ public class SysMenuController extends BaseController {
 
         int count = sysMenuService.count(new QueryWrapper<SysMenu>().eq("parent_id", id));
         if (count > 0) {
-            return Result.fail("请先删除子菜单");
+            return Result.error("请先删除子菜单");
         }
 
         // 清除所有与该菜单相关的权限缓存
@@ -103,7 +107,7 @@ public class SysMenuController extends BaseController {
 
         // 同步删除中间关联表
         sysRoleMenuService.remove(new QueryWrapper<SysRoleMenu>().eq("menu_id", id));
-        return Result.succ("");
+        return Result.ok("");
     }
 
 }

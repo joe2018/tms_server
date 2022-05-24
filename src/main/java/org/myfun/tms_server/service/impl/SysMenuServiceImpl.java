@@ -1,10 +1,15 @@
 package org.myfun.tms_server.service.impl;
 
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import org.myfun.tms_server.common.dto.SysMenuDto;
 import org.myfun.tms_server.entity.SysMenu;
+import org.myfun.tms_server.entity.SysUser;
 import org.myfun.tms_server.mapper.SysMenuMapper;
+import org.myfun.tms_server.mapper.SysUserMapper;
 import org.myfun.tms_server.service.SysMenuService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.myfun.tms_server.service.SysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -30,7 +35,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     SysUserMapper sysUserMapper;
 
     @Override
-    public List<SysMenuDto> getCurrentUserNav() {
+    public List getCurrentUserNav() {
         String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         SysUser sysUser = sysUserService.getByUsername(username);
 

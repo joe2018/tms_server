@@ -1,8 +1,15 @@
 package org.myfun.tms_server.controller;
 
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.myfun.tms_server.common.dto.PassDto;
+import org.myfun.tms_server.common.lang.Const;
+import org.myfun.tms_server.common.lang.Result;
+import org.myfun.tms_server.entity.SysRole;
+import org.myfun.tms_server.entity.SysUser;
+import org.myfun.tms_server.entity.SysUserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -42,7 +49,7 @@ public class SysUserController extends BaseController {
         List<SysRole> roles = sysRoleService.listRolesByUserId(id);
 
         sysUser.setSysRoles(roles);
-        return Result.succ(sysUser);
+        return Result.ok("操作成功",sysUser);
     }
 
     @GetMapping("/list")
@@ -57,7 +64,7 @@ public class SysUserController extends BaseController {
             u.setSysRoles(sysRoleService.listRolesByUserId(u.getId()));
         });
 
-        return Result.succ(pageData);
+        return Result.ok("操作成功",pageData);
     }
 
     @PostMapping("/save")
@@ -75,7 +82,7 @@ public class SysUserController extends BaseController {
         sysUser.setAvatar(Const.DEFULT_AVATAR);
 
         sysUserService.save(sysUser);
-        return Result.succ(sysUser);
+        return Result.ok("操作成功",sysUser);
     }
 
     @PostMapping("/update")
@@ -85,7 +92,7 @@ public class SysUserController extends BaseController {
         sysUser.setUpdated(LocalDateTime.now());
 
         sysUserService.updateById(sysUser);
-        return Result.succ(sysUser);
+        return Result.ok("操作成功",sysUser);
     }
 
     @Transactional
@@ -96,7 +103,7 @@ public class SysUserController extends BaseController {
         sysUserService.removeByIds(Arrays.asList(ids));
         sysUserRoleService.remove(new QueryWrapper<SysUserRole>().in("user_id", ids));
 
-        return Result.succ("");
+        return Result.ok("");
     }
 
     @Transactional
@@ -121,7 +128,7 @@ public class SysUserController extends BaseController {
         SysUser sysUser = sysUserService.getById(userId);
         sysUserService.clearUserAuthorityInfo(sysUser.getUsername());
 
-        return Result.succ("");
+        return Result.ok("");
     }
 
     @PostMapping("/repass")
@@ -134,7 +141,7 @@ public class SysUserController extends BaseController {
         sysUser.setUpdated(LocalDateTime.now());
 
         sysUserService.updateById(sysUser);
-        return Result.succ("");
+        return Result.ok("");
     }
 
     @PostMapping("/updatePass")
@@ -144,13 +151,13 @@ public class SysUserController extends BaseController {
 
         boolean matches = passwordEncoder.matches(passDto.getCurrentPass(), sysUser.getPassword());
         if (!matches) {
-            return Result.fail("旧密码不正确");
+            return Result.error("旧密码不正确");
         }
 
         sysUser.setPassword(passwordEncoder.encode(passDto.getPassword()));
         sysUser.setUpdated(LocalDateTime.now());
 
         sysUserService.updateById(sysUser);
-        return Result.succ("");
+        return Result.ok("");
     }
 }

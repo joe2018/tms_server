@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.myfun.tms_server.common.lang.Const;
 import org.myfun.tms_server.common.lang.Result;
+import org.myfun.tms_server.entity.SysUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -64,7 +65,7 @@ public class AuthController extends BaseController{
 
         SysUser sysUser = sysUserService.getByUsername(principal.getName());
 
-        return Result.succ(MapUtil.builder()
+        return Result.ok("操作成功",MapUtil.builder()
                 .put("id", sysUser.getId())
                 .put("username", sysUser.getUsername())
                 .put("avatar", sysUser.getAvatar())

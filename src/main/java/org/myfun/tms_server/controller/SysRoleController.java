@@ -1,8 +1,14 @@
 package org.myfun.tms_server.controller;
 
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.myfun.tms_server.common.lang.Const;
+import org.myfun.tms_server.common.lang.Result;
+import org.myfun.tms_server.entity.SysRole;
+import org.myfun.tms_server.entity.SysRoleMenu;
+import org.myfun.tms_server.entity.SysUserRole;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -38,7 +44,7 @@ public class SysRoleController extends BaseController {
         List<Long> menuIds = roleMenus.stream().map(p -> p.getMenuId()).collect(Collectors.toList());
 
         sysRole.setMenuIds(menuIds);
-        return Result.succ(sysRole);
+        return Result.ok("操作成功",sysRole);
     }
 
     @PreAuthorize("hasAuthority('sys:role:list')")
@@ -50,7 +56,7 @@ public class SysRoleController extends BaseController {
                         .like(StrUtil.isNotBlank(name), "name", name)
         );
 
-        return Result.succ(pageData);
+        return Result.ok("操作成功",pageData);
     }
 
     @PostMapping("/save")
@@ -61,7 +67,7 @@ public class SysRoleController extends BaseController {
         sysRole.setStatu(Const.STATUS_ON);
 
         sysRoleService.save(sysRole);
-        return Result.succ(sysRole);
+        return Result.ok("操作成功",sysRole);
     }
 
     @PostMapping("/update")
@@ -75,7 +81,7 @@ public class SysRoleController extends BaseController {
         // 更新缓存
         sysUserService.clearUserAuthorityInfoByRoleId(sysRole.getId());
 
-        return Result.succ(sysRole);
+        return Result.ok("操作成功",sysRole);
     }
 
     @PostMapping("/delete")
@@ -95,7 +101,7 @@ public class SysRoleController extends BaseController {
             sysUserService.clearUserAuthorityInfoByRoleId(id);
         });
 
-        return Result.succ("");
+        return Result.ok("");
     }
 
     @Transactional
@@ -120,7 +126,7 @@ public class SysRoleController extends BaseController {
         // 删除缓存
         sysUserService.clearUserAuthorityInfoByRoleId(roleId);
 
-        return Result.succ(menuIds);
+        return Result.ok("操作成功",menuIds);
     }
 
 }
