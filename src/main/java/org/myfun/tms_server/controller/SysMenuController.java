@@ -55,13 +55,13 @@ public class SysMenuController extends BaseController {
     }
 
     @GetMapping("/info/{id}")
-    @PreAuthorize("hasAuthority('sys:menu:list')")
+    @PreAuthorize("hasAuthority('sys:menus:list')")
     public Result info(@PathVariable(name = "id") Long id) {
         return Result.ok("操作成功",sysMenuService.getById(id));
     }
 
     @GetMapping("/list")
-    @PreAuthorize("hasAuthority('sys:menu:list')")
+    @PreAuthorize("hasAuthority('sys:menus:list')")
     public Result list() {
 
         List<SysMenu> menus = sysMenuService.tree();
@@ -69,17 +69,16 @@ public class SysMenuController extends BaseController {
     }
 
     @PostMapping("/save")
-    @PreAuthorize("hasAuthority('sys:menu:save')")
+    @PreAuthorize("hasAuthority('sys:menus:save')")
     public Result save(@Validated @RequestBody SysMenu sysMenu) {
 
         sysMenu.setCreated(LocalDateTime.now());
-
         sysMenuService.save(sysMenu);
         return Result.ok("操作成功",sysMenu);
     }
 
     @PostMapping("/update")
-    @PreAuthorize("hasAuthority('sys:menu:update')")
+    @PreAuthorize("hasAuthority('sys:menus:update')")
     public Result update(@Validated @RequestBody SysMenu sysMenu) {
 
         sysMenu.setUpdated(LocalDateTime.now());
@@ -92,7 +91,7 @@ public class SysMenuController extends BaseController {
     }
 
     @PostMapping("/delete/{id}")
-    @PreAuthorize("hasAuthority('sys:menu:delete')")
+    @PreAuthorize("hasAuthority('sys:menus:delete')")
     public Result delete(@PathVariable("id") Long id) {
 
         int count = sysMenuService.count(new QueryWrapper<SysMenu>().eq("parent_id", id));

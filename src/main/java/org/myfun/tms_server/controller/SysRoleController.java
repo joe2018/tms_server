@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/sys/role")
 public class SysRoleController extends BaseController {
 
-    @PreAuthorize("hasAuthority('sys:role:list')")
+    @PreAuthorize("hasAuthority('sys:roles:list')")
     @GetMapping("/info/{id}")
     public Result info(@PathVariable("id") Long id) {
 
@@ -47,7 +47,7 @@ public class SysRoleController extends BaseController {
         return Result.ok("操作成功",sysRole);
     }
 
-    @PreAuthorize("hasAuthority('sys:role:list')")
+    @PreAuthorize("hasAuthority('sys:roles:list')")
     @GetMapping("/list")
     public Result list(String name) {
 
@@ -60,18 +60,18 @@ public class SysRoleController extends BaseController {
     }
 
     @PostMapping("/save")
-    @PreAuthorize("hasAuthority('sys:role:save')")
+    @PreAuthorize("hasAuthority('sys:roles:save')")
     public Result save(@Validated @RequestBody SysRole sysRole) {
 
         sysRole.setCreated(LocalDateTime.now());
-        sysRole.setStatu(Const.STATUS_ON);
+//        sysRole.setStatu(Const.STATUS_ON);
 
         sysRoleService.save(sysRole);
         return Result.ok("操作成功",sysRole);
     }
 
     @PostMapping("/update")
-    @PreAuthorize("hasAuthority('sys:role:update')")
+    @PreAuthorize("hasAuthority('sys:roles:update')")
     public Result update(@Validated @RequestBody SysRole sysRole) {
 
         sysRole.setUpdated(LocalDateTime.now());
@@ -85,7 +85,7 @@ public class SysRoleController extends BaseController {
     }
 
     @PostMapping("/delete")
-    @PreAuthorize("hasAuthority('sys:role:delete')")
+    @PreAuthorize("hasAuthority('sys:roles:delete')")
     @Transactional
     public Result info(@RequestBody Long[] ids) {
 
@@ -101,12 +101,12 @@ public class SysRoleController extends BaseController {
             sysUserService.clearUserAuthorityInfoByRoleId(id);
         });
 
-        return Result.ok("");
+        return Result.ok("删除成功");
     }
 
     @Transactional
     @PostMapping("/perm/{roleId}")
-    @PreAuthorize("hasAuthority('sys:role:perm')")
+    @PreAuthorize("hasAuthority('sys:roles:perm')")
     public Result info(@PathVariable("roleId") Long roleId, @RequestBody Long[] menuIds) {
 
         List<SysRoleMenu> sysRoleMenus = new ArrayList<>();

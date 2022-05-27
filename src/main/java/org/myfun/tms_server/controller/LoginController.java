@@ -41,7 +41,7 @@ public class LoginController extends BaseController {
     }
 
     // 普通用户、超级管理员
-    @PreAuthorize("hasAuthority('sys:user:list')")
+
     @GetMapping("/pass")
     public Result pass() {
 

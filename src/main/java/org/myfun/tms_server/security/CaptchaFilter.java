@@ -46,7 +46,7 @@ public class CaptchaFilter extends OncePerRequestFilter {
         String key = httpServletRequest.getParameter("key");
 
         if (StringUtils.isBlank(code) || StringUtils.isBlank(key)){
-            throw new CaptchaException("验证码错误");
+            throw new CaptchaException("验证码错误!");
         }
         if (!code.equals(redisUtil.hget(Const.CAPTCHA_KEY,key))){
             throw new CaptchaException("验证码错误");
