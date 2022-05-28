@@ -40,7 +40,7 @@ public class SysUserController extends BaseController {
     BCryptPasswordEncoder passwordEncoder;
 
     @GetMapping("/info/{id}")
-    @PreAuthorize("hasAuthority('sys:user:list')")
+    @PreAuthorize("hasAuthority('sys:users:list')")
     public Result info(@PathVariable("id") Long id) {
 
         SysUser sysUser = sysUserService.getById(id);
@@ -53,7 +53,7 @@ public class SysUserController extends BaseController {
     }
 
     @GetMapping("/list")
-    @PreAuthorize("hasAuthority('sys:user:list')")
+    @PreAuthorize("hasAuthority('sys:users:list')")
     public Result list(String username) {
 
         Page<SysUser> pageData = sysUserService.page(getPage(), new QueryWrapper<SysUser>()
@@ -68,7 +68,7 @@ public class SysUserController extends BaseController {
     }
 
     @PostMapping("/save")
-    @PreAuthorize("hasAuthority('sys:user:save')")
+    @PreAuthorize("hasAuthority('sys:users:save')")
     public Result save(@Validated @RequestBody SysUser sysUser) {
 
         sysUser.setCreated(LocalDateTime.now());
@@ -86,7 +86,7 @@ public class SysUserController extends BaseController {
     }
 
     @PostMapping("/update")
-    @PreAuthorize("hasAuthority('sys:user:update')")
+    @PreAuthorize("hasAuthority('sys:users:update')")
     public Result update(@Validated @RequestBody SysUser sysUser) {
 
         sysUser.setUpdated(LocalDateTime.now());
@@ -97,7 +97,7 @@ public class SysUserController extends BaseController {
 
     @Transactional
     @PostMapping("/delete")
-    @PreAuthorize("hasAuthority('sys:user:delete')")
+    @PreAuthorize("hasAuthority('sys:users:delete')")
     public Result delete(@RequestBody Long[] ids) {
 
         sysUserService.removeByIds(Arrays.asList(ids));
@@ -108,7 +108,7 @@ public class SysUserController extends BaseController {
 
     @Transactional
     @PostMapping("/role/{userId}")
-    @PreAuthorize("hasAuthority('sys:user:role')")
+    @PreAuthorize("hasAuthority('sys:users:role')")
     public Result rolePerm(@PathVariable("userId") Long userId, @RequestBody Long[] roleIds) {
 
         List<SysUserRole> userRoles = new ArrayList<>();
@@ -132,7 +132,7 @@ public class SysUserController extends BaseController {
     }
 
     @PostMapping("/repass")
-    @PreAuthorize("hasAuthority('sys:user:repass')")
+    @PreAuthorize("hasAuthority('sys:users:repass')")
     public Result repass(@RequestBody Long userId) {
 
         SysUser sysUser = sysUserService.getById(userId);
